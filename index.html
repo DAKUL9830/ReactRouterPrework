@@ -1,0 +1,147 @@
+
+<html>
+	<head>
+		
+        <meta name="view" content="width=device-width, initial-scale=1.0" />
+		<script
+			src="https://unpkg.com/react@16/umd/react.development.js"
+			crossorigin
+		></script>
+		<script
+			src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"
+			crossorigin
+		></script>
+		<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.js"></script>
+		<script src="https://unpkg.com/react-router-dom/umd/react-router-dom.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.js"></script>
+		<!--<script type="text/babel" src="app.js" defer></script>-->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js" defer></script>
+	    <style>
+           nav{
+			   display:flex;
+			   justify-content: space-around;
+		   }
+		   .selected{
+			   border:solid 1px black;
+		   }
+		</style>
+        
+		
+	</head>
+	<body>
+        <div id="root"></div>
+        <script type='text/babel'>
+            //const {Component}=React.Component;
+           const {render}=ReactDOM;
+
+
+
+const{HashRouter,Switch,Link,Route,Redirect}=ReactRouterDOM;
+const root=document.querySelector('#root');
+const  Home=()=><div><h1>Home</h1></div>
+const  About=()=><div><h1>About Us</h1></div>
+const Users=({users})=><div>
+	<h1>Users</h1>
+	<ul>{
+		users.map((user,idx)=><li key={idx}>{user.name}</li>)
+	}</ul>
+	
+	</div>
+/*class App extends React.Component{
+	constructor(){
+		super();
+		this.state={
+			view:'home'
+		}
+		}
+	    componentDidMount(){
+			window.addEventListener('hashchange',()=>{
+				const hash=window.location.hash;
+				const view=hash.slice(1);
+				this.setState({view})
+
+			})
+			const hash=window.location.hash;
+			if(!hash){
+				window.location.hash='home';
+
+			}else{
+				const view=hash.slice(1);
+				this.setState({view});
+
+			}
+		}
+	
+		
+    render(){
+		const {view}=this.state;
+		let Current;
+		if(view==='home'){
+			Current=Home;
+		}else if(view==='about'){
+            Current=About;
+		}
+		return (<div>
+			<nav>
+			<a href='#home'>Home</a>
+			<a href='#about'>About</a>
+			</nav>
+
+			{!!Current&&<Current />}
+			</div>);
+    }<
+}*/
+
+const Nav=({path,users})=>{
+	
+	//const path=props.location.pathname;
+	return(<nav>
+			<Link to='/home' className={path==='/home'?'selected':''}>Home</Link>
+			<Link to='/about' className={path==='/about'?'selected':''}>About</Link>
+			<Link to='/users' className={path==='/users'?'selected':''}>Users ({users.length})</Link>
+			</nav>)
+}
+class App extends React.Component{
+	constructor(){
+		super();
+		this.state={
+			users:[
+				{name:'Dmitry'},
+				{name:'Alina'},
+				{name:'Vika'},
+			]
+		}
+	}
+	componentDidMount(){
+		setTimeout(()=>{
+		const users=[...this.state.users,{name:'newAlina'}]
+	this.setState({users})
+		},1000)
+	}
+	
+	render(){
+		const {users}=this.state;
+		console.log(users)
+	return(
+	<HashRouter>
+		
+	       <Route render={(props)=> <Nav users={users} path= {props.location.pathname}/>}/>
+			<Switch>
+			<Route path='/home' component= {Home}/>
+			<Route path='/about' component= {About}/>
+			<Route path='/users' render={()=> <Users users={users}/>}/>
+			<Redirect to='/home'/>
+			</Switch>
+
+		     
+		</HashRouter>
+	)
+}
+}
+
+render(<App />,root);
+
+        </script>
+	</body>
+</html>
